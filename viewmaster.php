@@ -6,7 +6,7 @@ include 'db.php';
 echo "<title>NCS Call Sign Master List Database</title>\n";
 echo "<body bgcolor=$bodycolor>\n";
 echo "<br>
-<li><a href=\"http://98.196.250.3/ncslogger\">MainSite</a> </li>
+<li><a href=\"http://192.168.10.10/ncslogger\">MainSite</a> </li>
 <li><a href=\"man.html\">Instructions</a> </li>
 <li><a href=\"listcheckins.php\">View Checkins</a> </li>
 <li><a href=\"viewmaster.php\">View Master List</a> </li> ";
