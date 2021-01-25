@@ -7,7 +7,7 @@ echo "You typially want to start with a clean slate.<br> That way you
 can keep up with the checkins for this session.<br> There is a date stamp
 to keep them in order. ";
 echo "<br>
-<li><a href=\"http://98.196.250.3/ncslogger\">MainSite</a> </li>
+<li><a href=\"http://192.168.10.10/ncslogger\">MainSite</a> </li>
 <li><a href=\"man.html\">Instructions</a> </li>
 <li><a href=\"listcheckins.php\">View Checkins</a> </li>
 <li><a href=\"viewmaster.php\">View Master List</a> </li> ";
