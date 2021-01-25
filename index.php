@@ -16,6 +16,16 @@ function proc_input($input) {
     return $input;
 }
 //#########################################################
+function text_log($input {
+$logfile = fopen("/tmp/checkin-logs.txt", "a") or die("Unable to open file!");
+//$txt = "user id date";
+fwrite($logfile, "\n". $input);
+fclose($logfile);
+}
+		  
+
+
+
 echo "<title>NCSLogger Call Sign Database</title>\n";
 echo "<body bgcolor=$bodycolor>\n";
 echo "<table border=1  cellpadding=10>\n ";
