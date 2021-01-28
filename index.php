@@ -2,9 +2,14 @@
 //
 include 'look.php' ;
 include 'db.php' ;
+
+echo "<html><script src=\"https://code.jquery.com/jquery-3.5.0.js\"></script>";
 $bodycolor = "white";
 $headcolor = "white";
-$headercontent = "<center><h2>NCS Database</h2></center>";
+$headercontent = "<center><h2>NCS Database</h2></center>
+<p><b>Results:</b> <span id=\"results\"></span></p>
+
+";
 $leftcolor = "white";
 $maincolor = "white";
 //#########################################################
@@ -26,6 +31,9 @@ echo "<tr>\n<td bgcolor=$leftcolor width=\"%30\" valign=top>\n";
 echo "$leftcontent\n";
 echo "</td>\n";
 echo"<td bgcolor=$maincolor width=\"%70\">\n";
+
+
+// ##### start of display of I ran select on call sign and checked box an clicked checkin ##########
 echo "<FORM METHOD=\"POST\" ACTION=$PHP_SELF >\n";
 $tmpx = count($_POST['checkin']) ;
         if( isset($_POST['checkin']) && count($_POST['checkin']) >  0 ) {
@@ -49,7 +57,7 @@ $tmpx = count($_POST['checkin']) ;
 			     $res2 = $conn->query($sql2);
 			     if ($res2->num_rows == 0) {
 			       $sqlupdatetime = "UPDATE `checkinmain` SET `lastheard` = CURRENT_TIME() WHERE `checkinmain`.`callsign` = '$chkincall' ";
-                             // echo "SQLTIME ". $sqlupdatetime ."   ";
+                               // echo "SQLTIME ". $sqlupdatetime ."   ";
 			       $res2 = $conn->query($sqlupdatetime);
 			      // echo "NUM=".$conn->affected_rows ." "; 
                                $sql3 = "INSERT INTO checkindb (callsign,state,town,name,county,grid,net,selected,lastheard) VALUES ('".$chkincall."','".$chkinst."','".$chkintown."','".$chkinname."','".$chkincounty."','".$chkingrid."','".$chkinnet."','".$chkinsel."',CURRENT_TIME() )" ;
@@ -63,10 +71,11 @@ $tmpx = count($_POST['checkin']) ;
                                 echo "<font color=YELLOW><h3>Dupliate Checkin Dectected ".$chkincall ."</font></h3>\n";
 			      } // res2 rows
                     } // end whilefetch
-             $conn->close(); 
 		   } // end if rows
             } // end foreach ticked
+             $conn->close(); 
 	}  // isset end checkins
+// ### PUSHED SUBMIT HERE with CALLSIGN ###################
 if(isset( $_POST['submit'] )) {
 	$thecall = $_POST['callsign'] ;
 	$thecall = proc_input($thecall);
@@ -75,19 +84,27 @@ if(isset( $_POST['submit'] )) {
            echo "</h3></font><br>";
 	}
         $conn = new mysqli($dbhost, $dbuser, $dbpass,$db) or die("Connect failed: %s\n". $conn -> error);	
-	$sql = "SELECT * FROM `checkinmain` WHERE `callsign` LIKE '%$thecall%' ORDER BY `ndx` ASC";
-        $result = $conn->query($sql);
-        if ($result->num_rows > 0) {
+
+	//$sqldup = "SELECT * FROM `checkindb` WHERE `callsign` LIKE '%$thecall%' ";
+        //$resdup = $conn->query($sqldup);
+        //if ($result->num_rows > 0) {
+	  $sql = "SELECT * FROM `checkinmain` WHERE `callsign` LIKE '%$thecall%' ORDER BY `ndx` ASC";
+          $result = $conn->query($sql);
+          if ($result->num_rows > 0) {
               while($row = $result->fetch_assoc()) {   // value="' . $row['usn'] . '"
-		echo "<tr>";
-                // echo "<td><input type=\"checkbox\" name=\"ticked[]\" value=\"".$row['callsign']."\"</td><td>". $row["callsign"]. " " . $row["name"]. "  " . $row["town"]. ",".$row["state"]."</td>\n";
-                echo "<td><input type=\"checkbox\" name=\"ticked[]\" value=\"".$row['callsign']."\"</td><td>". $row["callsign"]. "</td><td> " . $row["name"]. " </td><td> " . $row["town"]. "</td><td>".$row["state"]."</td></td>\n";
+		echo "<tr>"; //  <input type="checkbox" name="check" value="Bcheck2" checked="checked" id="ch2">
+		echo "<td><input type=\"checkbox\" name=\"ticked[]\" value=\" ".$row['callsign']."   \" id=\" ".$row['ndx']." \"</input>";
+		echo "<label for=". $row['idx'] .">Check In</label></td>\n";
+		echo "<td>". $row["callsign"]. "</td><td> " . $row["name"]. " </td><td> " . $row["town"]. "</td><td>".$row["state"]."</td></td>\n";
 		echo "</tr>";
                 }
              } else {
              echo "0 results";
              }
-             $conn->close(); 
+	$conn->close(); 
+
+
+	// END OF SELECT BY CALL DISPLAY #################
 } else {      // isset formflg submit
     	// end do work   
 } 
@@ -100,9 +117,27 @@ echo "<INPUT TYPE=\"text\" NAME=\"callsign\" SIZE=\"40\">\n";
 echo "<INPUT TYPE=\"hidden\" NAME=\"formflg\" SIZE=\"10\">\n";
 echo "</ul><br>\n";
 echo "<INPUT TYPE=\"submit\" name=\"submit\" style=\"background-color:Green;color:white;\"  value=\"Search Call\">\n";
-echo "<input type=\"submit\" name=\"checkin\" style=\"background-color:Green;color:white;\" value=\"Log Checkin\">\n";
+//echo "<input type=\"submit\" name=\"checkin\" style=\"background-color:Green;color:white;\" value=\"Log Checkin\">\n";
 echo "</td></tr>\n";
 echo "</table>\n";
 echo "</form>\n";
-   
 ?>
+<script>
+  function showValues() {
+    var fields = $( ":input" ).serializeArray();
+    $( "#results" ).empty();
+    jQuery.each( fields, function( i, field ) {
+      console.log( field.value);
+   $( "#results" ).append( field.value + " " );
+   $.ajax({
+        url: "addcheckin.php",
+        method: "POST",
+        data: { hamcall: field.value }
+      }).done(function(res){
+              console.log(res);
+              });    
+    }); // end of jquery each 
+  } // end of functon showValues
+  $( ":checkbox" ).click( showValues );
+  showValues();
+</script>

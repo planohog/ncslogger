@@ -6,12 +6,12 @@ include 'db.php';
 echo "<title>NCS Call Sign Master List Database</title>\n";
 echo "<body bgcolor=$bodycolor>\n";
 echo "<br>
-<li><a href=\"http://192.168.10.10/ncslogger\">MainSite</a> </li>
+<li><a href=\"http://98.196.250.3/ncslogger\">MainSite</a> </li>
 <li><a href=\"man.html\">Instructions</a> </li>
 <li><a href=\"listcheckins.php\">View Checkins</a> </li>
 <li><a href=\"viewmaster.php\">View Master List</a> </li> ";
 $conn = new mysqli($dbhost, $dbuser, $dbpass,$db) or die("Connect failed: %s\n". $conn -> error);
-$sql = "SELECT * FROM `checkinmain` WHERE 1 ORDER BY `ndx` ASC LIMIT 300 ";
+$sql = "SELECT * FROM `checkinmain` WHERE 1 ORDER BY `ndx` ASC LIMIT 500";
 $result = $conn->query($sql);
 #echo "Number of CallSigns ". $result->num_rows ."\n";
 echo "<table border=1  cellpadding=10>\n ";
